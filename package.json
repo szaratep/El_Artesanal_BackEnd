@@ -1,0 +1,32 @@
+{
+  "name": "el_artesanal_backend",
+  "version": "1.0.0",
+  "description": "Laser cutting, engraving and personalized MDF products e-commerce platform — catalog management, custom quote requests, order tracking and online payments.",
+  "keywords": [
+    "ecommerce",
+    "laser-cutting",
+    "laser-engraving",
+    "mdf",
+    "personalized-products",
+    "quotes",
+    "order-tracking",
+    "mongoose",
+    "mongodb",
+    "expressjs",
+    "nodejs",
+    "mean-stack"
+  ],
+  "license": "UNLICENSED",
+  "private": "true",
+  "author": "Sebastian Zarate Pinilla <sebaszarate2005@gmail.com>",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch ./src/index.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "express": "^5.2.1",
+    "mongoose": "^9.6.3"
+  }
+}
