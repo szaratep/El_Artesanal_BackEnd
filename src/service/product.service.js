@@ -1,5 +1,5 @@
-import ProductModel  from '../models/product.model.js';
-import CategoryModel from '../models/category.model.js';
+import ProductModel  from '../models/Product.model.js';
+import CategoryModel from '../models/Category.model.js';
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 const getAll = async ({

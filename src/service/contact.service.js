@@ -1,5 +1,5 @@
-import ContactModel from '../models/contact.model.js';
-import UserModel    from '../models/user.model.js';
+import ContactModel from '../models/Contact.model.js';
+import UserModel    from '../models/User.model.js';
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 const getAll = async ({ page = 1, limit = 10, userId, isDefault } = {}) => {

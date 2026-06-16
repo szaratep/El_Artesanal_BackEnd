@@ -1,6 +1,6 @@
-import PromotionModel from '../models/promotion.model.js';
-import ProductModel   from '../models/product.model.js';
-import CategoryModel  from '../models/category.model.js';
+import PromotionModel from '../models/Promotion.model.js';
+import ProductModel   from '../models/Product.model.js';
+import CategoryModel  from '../models/Category.model.js';
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 const getAll = async ({ page = 1, limit = 10, isActive, scope } = {}) => {

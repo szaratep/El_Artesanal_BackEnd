@@ -1,9 +1,9 @@
-import OrderModel     from '../models/order.model.js';
-import ProductModel   from '../models/product.model.js';
-import QuoteModel     from '../models/quote.model.js';
-import ContactModel   from '../models/contact.model.js';
-import PromotionModel from '../models/promotion.model.js';
-import UserModel      from '../models/user.model.js';
+import OrderModel     from '../models/Order.model.js';
+import ProductModel   from '../models/Product.model.js';
+import QuoteModel     from '../models/Quote.model.js';
+import ContactModel   from '../models/Contact.model.js';
+import PromotionModel from '../models/Promotion.model.js';
+import UserModel      from '../models/User.model.js';
 import promotionService from './promotion.service.js';
 
 // ─── GENERATE ORDER NUMBER ────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
-import PaymentModel from '../models/payment.model.js';
-import OrderModel   from '../models/order.model.js';
-import UserModel    from '../models/user.model.js';
+import PaymentModel from '../models/Payment.model.js';
+import OrderModel   from '../models/Order.model.js';
+import UserModel    from '../models/User.model.js';
 
 // ─── POPULATE OPTIONS ─────────────────────────────────────────────────────────
 const _populateOptions = [

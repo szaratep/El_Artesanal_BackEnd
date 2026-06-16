@@ -1,5 +1,5 @@
-import QuoteModel from '../models/quote.model.js';
-import UserModel  from '../models/user.model.js';
+import QuoteModel from '../models/Quote.model.js';
+import UserModel  from '../models/User.model.js';
 
 // ─── GENERATE QUOTE NUMBER ────────────────────────────────────────────────────
 const _generateQuoteNumber = async () => {

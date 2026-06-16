@@ -12,6 +12,7 @@ export const getAll = async (req, res) => {
             data
         });
     } catch (error) {
+        console.error(error)
         return res.status(500).json({
             ok:      false,
             message: 'Error al obtener los usuarios',
