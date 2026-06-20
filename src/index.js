@@ -10,6 +10,8 @@ import quoteRoutes     from './routes/quote.routes.js';
 import orderRoutes     from './routes/order.routes.js';
 import paymentRoutes   from './routes/payment.routes.js';
 
+const PORT = process.env.PORT || 3000 ;
+
 const app = express();
 
 connectDB();
@@ -25,8 +27,8 @@ app.use('/quotes',     quoteRoutes);
 app.use('/orders',     orderRoutes);
 app.use('/payments',   paymentRoutes);
 
-app.listen(5000, ()=> {
-    console.log('Server Running on: http://localhost:5000');
+app.listen(PORT, ()=> {
+    console.log(`Server Running on: http://localhost:${PORT}`);
 });
 
 
