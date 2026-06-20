@@ -3,8 +3,7 @@ import orderService from '../service/order.service.js';
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 export const getAll = async (req, res) => {
     try {
-        const { page, limit, userId, status, deliveryType } = req.query;
-        const data = await orderService.getAll({ page, limit, userId, status, deliveryType });
+        const data = await orderService.getAll();
 
         return res.status(200).json({
             ok:      true,

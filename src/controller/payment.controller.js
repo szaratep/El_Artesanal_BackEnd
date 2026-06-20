@@ -3,8 +3,7 @@ import paymentService from '../service/payment.service.js';
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 export const getAll = async (req, res) => {
     try {
-        const { page, limit, userId, status, gateway, paymentMethod } = req.query;
-        const data = await paymentService.getAll({ page, limit, userId, status, gateway, paymentMethod });
+        const data = await paymentService.getAll();
 
         return res.status(200).json({
             ok:      true,

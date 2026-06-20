@@ -3,8 +3,7 @@ import productService from '../service/product.service.js';
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 export const getAll = async (req, res) => {
     try {
-        const { page, limit, isActive, isFeatured, categoryId, material, search } = req.query;
-        const data = await productService.getAll({ page, limit, isActive, isFeatured, categoryId, material, search });
+        const data = await productService.getAll();
 
         return res.status(200).json({
             ok:      true,

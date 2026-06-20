@@ -3,8 +3,7 @@ import quoteService from '../service/quote.service.js';
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 export const getAll = async (req, res) => {
     try {
-        const { page, limit, userId, status } = req.query;
-        const data = await quoteService.getAll({ page, limit, userId, status });
+        const data = await quoteService.getAll();
 
         return res.status(200).json({
             ok:      true,

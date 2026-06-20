@@ -10,24 +10,8 @@ const _generateQuoteNumber = async () => {
 };
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
-const getAll = async ({ page = 1, limit = 10, userId, status } = {}) => {
-    const filter = {};
-
-    if (userId !== undefined) filter.userId = userId;
-    if (status !== undefined) filter.status = status;
-
-    const options = {
-        page:     Number(page),
-        limit:    Number(limit),
-        sort:     { createdAt: -1 },
-        populate: [
-            { path: 'userId',     model: 'users', select: 'name nickname email' },
-            { path: 'assignedTo', model: 'users', select: 'name nickname'       }
-        ],
-        lean: false
-    };
-
-    return await QuoteModel.paginate(filter, options);
+const getAll = async () => {
+    return await QuoteModel.find().populate({ path: 'userId', model: 'users', select: 'name nickname email' });
 };
 
 // ─── GET BY ID ─────────────────────────────────────────────────────────────────
@@ -35,7 +19,6 @@ const getById = async (id) => {
     const quote = await QuoteModel
         .findById(id)
         .populate({ path: 'userId',     model: 'users', select: 'name nickname email' })
-        .populate({ path: 'assignedTo', model: 'users', select: 'name nickname'       });
 
     if (!quote) throw new Error('Cotización no encontrada');
     return quote;
@@ -50,7 +33,6 @@ const getByUser = async (userId) => {
         .find({ userId })
         .sort({ createdAt: -1 })
         .populate({ path: 'userId',     model: 'users', select: 'name nickname email' })
-        .populate({ path: 'assignedTo', model: 'users', select: 'name nickname'       });
 };
 
 // ─── GET BY QUOTE NUMBER ───────────────────────────────────────────────────────
@@ -58,7 +40,6 @@ const getByQuoteNumber = async (quoteNumber) => {
     const quote = await QuoteModel
         .findOne({ quoteNumber: quoteNumber.toUpperCase().trim() })
         .populate({ path: 'userId',     model: 'users', select: 'name nickname email' })
-        .populate({ path: 'assignedTo', model: 'users', select: 'name nickname'       });
 
     if (!quote) throw new Error('Cotización no encontrada');
     return quote;
@@ -93,8 +74,7 @@ const update = async (id, data) => {
         { $set: data },
         { new: true, runValidators: true }
     )
-        .populate({ path: 'userId',     model: 'users', select: 'name nickname email' })
-        .populate({ path: 'assignedTo', model: 'users', select: 'name nickname'       });
+        .populate({ path: 'userId',     model: 'users', select: 'name nickname email' });
 };
 
 // ─── UPDATE STATUS ────────────────────────────────────────────────────────────
@@ -121,8 +101,7 @@ const updateStatus = async (id, status, extraData = {}) => {
         { $set: { status, ...extraData } },
         { new: true, runValidators: true }
     )
-        .populate({ path: 'userId',     model: 'users', select: 'name nickname email' })
-        .populate({ path: 'assignedTo', model: 'users', select: 'name nickname'       });
+        .populate({ path: 'userId',     model: 'users', select: 'name nickname email' });
 };
 
 // ─── SET FINAL PRICE ──────────────────────────────────────────────────────────

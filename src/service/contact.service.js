@@ -2,23 +2,8 @@ import ContactModel from '../models/Contact.model.js';
 import UserModel    from '../models/User.model.js';
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
-const getAll = async ({ page = 1, limit = 10, userId, isDefault } = {}) => {
-    const filter = {};
-
-    if (userId    !== undefined) filter.userId    = userId;
-    if (isDefault !== undefined) filter.isDefault = isDefault;
-
-    const options = {
-        page:     Number(page),
-        limit:    Number(limit),
-        sort:     { isDefault: -1, createdAt: -1 },
-        populate: [
-            { path: 'userId', model: 'users', select: 'name nickname email' }
-        ],
-        lean: false
-    };
-
-    return await ContactModel.paginate(filter, options);
+const getAll = async () => {
+    return await ContactModel.find().populate({ path: 'userId', model: 'users', select: 'name nickname email' });
 };
 
 // ─── GET BY ID ─────────────────────────────────────────────────────────────────

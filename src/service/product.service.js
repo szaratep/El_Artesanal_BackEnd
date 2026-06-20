@@ -2,41 +2,8 @@ import ProductModel  from '../models/Product.model.js';
 import CategoryModel from '../models/Category.model.js';
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
-const getAll = async ({
-    page       = 1,
-    limit      = 10,
-    isActive,
-    isFeatured,
-    categoryId,
-    material,
-    search
-} = {}) => {
-    const filter = {};
-
-    if (isActive   !== undefined) filter.isActive   = isActive;
-    if (isFeatured !== undefined) filter.isFeatured  = isFeatured;
-    if (categoryId !== undefined) filter.categoryId  = categoryId;
-    if (material   !== undefined) filter.material    = material;
-    if (search) {
-        filter.$or = [
-            { name:        { $regex: search, $options: 'i' } },
-            { description: { $regex: search, $options: 'i' } },
-            { sku:         { $regex: search, $options: 'i' } },
-            { tags:        { $regex: search, $options: 'i' } }
-        ];
-    }
-
-    const options = {
-        page:     Number(page),
-        limit:    Number(limit),
-        sort:     { isFeatured: -1, createdAt: -1 },
-        populate: [
-            { path: 'categoryId', model: 'categories', select: 'name isActive' }
-        ],
-        lean: false
-    };
-
-    return await ProductModel.paginate(filter, options);
+const getAll = async () => {
+    return await ProductModel.find({ isActive: true }).populate({ path: 'categoryId', model: 'categories', select: 'name isActive' });
 };
 
 // ─── GET FEATURED ─────────────────────────────────────────────────────────────

@@ -3,8 +3,7 @@ import promotionService from '../service/promotion.service.js';
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 export const getAll = async (req, res) => {
     try {
-        const { page, limit, isActive, scope } = req.query;
-        const data = await promotionService.getAll({ page, limit, isActive, scope });
+        const data = await promotionService.getAll();
 
         return res.status(200).json({
             ok:      true,

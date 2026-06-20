@@ -1,23 +1,8 @@
 import UserModel from '../models/User.model.js';
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
-const getAll = async ({ page = 1, limit = 10, role, isActive } = {}) => {
-    const filter = {};
-
-    if (role !== undefined)     filter.role     = role;
-    if (isActive !== undefined) filter.isActive = isActive;
-
-    const options = {
-        page:     Number(page),
-        limit:    Number(limit),
-        sort:     { createdAt: -1 },
-        populate: [
-            { path: 'contacts', model: 'contacts' }
-        ],
-        lean: false
-    };
-
-    return await UserModel.paginate(filter, options);
+const getAll = async () => {
+    return await UserModel.find({ status: true }).populate({ path: 'contacts', model: 'contacts' });
 };
 
 // ─── GET BY ID ─────────────────────────────────────────────────────────────────
@@ -122,7 +107,7 @@ const updatePassword = async (id, hashedPassword) => {
 const softDelete = async (id) => {
     const exists = await UserModel.findById(id);
     if (!exists) throw new Error('Usuario no encontrado');
-    if (!exists.isActive) throw new Error('El usuario ya se encuentra desactivado');  // fixed: was checking exists.status
+    if (!exists.status) throw new Error('El usuario ya se encuentra desactivado');  // fixed: was checking exists.status
 
     return await UserModel.findByIdAndUpdate(
         id,

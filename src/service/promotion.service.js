@@ -3,25 +3,11 @@ import ProductModel   from '../models/Product.model.js';
 import CategoryModel  from '../models/Category.model.js';
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
-const getAll = async ({ page = 1, limit = 10, isActive, scope } = {}) => {
-    const filter = {};
-
-    if (isActive !== undefined) filter.isActive = isActive;
-    if (scope    !== undefined) filter.scope    = scope;
-
-    const options = {
-        page:     Number(page),
-        limit:    Number(limit),
-        sort:     { createdAt: -1 },
-        populate: [
-            { path: 'applicableProducts',   model: 'products',    select: 'name sku isActive' },
-            { path: 'applicableCategories', model: 'categories',  select: 'name isActive'     },
-            { path: 'createdBy',            model: 'users',       select: 'name nickname'      }
-        ],
-        lean: false
-    };
-
-    return await PromotionModel.paginate(filter, options);
+const getAll = async () => {
+    return await PromotionModel.find({ isActive: true })
+        .populate({ path: 'applicableProducts', model: 'products', select: 'name sku isActive' })
+        .populate({ path: 'applicableCategories', model: 'categories', select: 'name isActive' })
+        .populate({ path: 'createdBy', model: 'users', select: 'name nickname' });
 };
 
 // ─── GET ACTIVE ───────────────────────────────────────────────────────────────

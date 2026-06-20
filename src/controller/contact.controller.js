@@ -3,8 +3,7 @@ import contactService from '../service/contact.service.js';
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 export const getAll = async (req, res) => {
     try {
-        const { page, limit, userId, isDefault } = req.query;
-        const data = await contactService.getAll({ page, limit, userId, isDefault });
+        const data = await contactService.getAll();
 
         return res.status(200).json({
             ok:      true,

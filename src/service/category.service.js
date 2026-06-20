@@ -2,23 +2,8 @@ import CategoryModel from '../models/Category.model.js';
 import ProductModel  from '../models/Product.model.js';
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
-const getAll = async ({ page = 1, limit = 10, isActive, parentCategoryId } = {}) => {
-    const filter = {};
-
-    if (isActive         !== undefined) filter.isActive         = isActive;
-    if (parentCategoryId !== undefined) filter.parentCategoryId = parentCategoryId === 'null' ? null : parentCategoryId;
-
-    const options = {
-        page:     Number(page),
-        limit:    Number(limit),
-        sort:     { order: 1, createdAt: -1 },
-        populate: [
-            { path: 'parentCategoryId', model: 'categories', select: 'name isActive' }
-        ],
-        lean: false
-    };
-
-    return await CategoryModel.paginate(filter, options);
+const getAll = async () => {
+    return await CategoryModel.find({ isActive: true }).populate({ path: 'parentCategoryId', model: 'categories', select: 'name isActive' });
 };
 
 // ─── GET ALL ROOT (sin padre) ─────────────────────────────────────────────────

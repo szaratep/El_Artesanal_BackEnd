@@ -3,8 +3,7 @@ import userService from '../service/user.service.js';
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 export const getAll = async (req, res) => {
     try {
-        const { page, limit, role, isActive } = req.query;
-        const data = await userService.getAll({ page, limit, role, isActive });
+        const data = await userService.getAll();
 
         return res.status(200).json({
             ok:      true,
@@ -12,7 +11,6 @@ export const getAll = async (req, res) => {
             data
         });
     } catch (error) {
-        console.error(error)
         return res.status(500).json({
             ok:      false,
             message: 'Error al obtener los usuarios',
@@ -210,6 +208,7 @@ export const softDelete = async (req, res) => {
     } catch (error) {
         const isNotFound = error.message.includes('no encontrado');
         const isConflict = error.message.includes('ya se encuentra');
+        console.error(error)
 
         return res.status(isNotFound ? 404 : isConflict ? 409 : 500).json({
             ok:      false,

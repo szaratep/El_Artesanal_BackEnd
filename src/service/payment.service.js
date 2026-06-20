@@ -9,23 +9,10 @@ const _populateOptions = [
 ];
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
-const getAll = async ({ page = 1, limit = 10, userId, status, gateway, paymentMethod } = {}) => {
-    const filter = {};
-
-    if (userId        !== undefined) filter.userId        = userId;
-    if (status        !== undefined) filter.status        = status;
-    if (gateway       !== undefined) filter.gateway       = gateway;
-    if (paymentMethod !== undefined) filter.paymentMethod = paymentMethod;
-
-    const options = {
-        page:     Number(page),
-        limit:    Number(limit),
-        sort:     { createdAt: -1 },
-        populate: _populateOptions,
-        lean:     false
-    };
-
-    return await PaymentModel.paginate(filter, options);
+const getAll = async () => {
+    return await PaymentModel.find()
+        .populate(_populateOptions[0])
+        .populate(_populateOptions[1]);
 };
 
 // ─── GET BY ID ─────────────────────────────────────────────────────────────────

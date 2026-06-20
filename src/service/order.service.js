@@ -25,22 +25,14 @@ const _populateOptions = [
 ];
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
-const getAll = async ({ page = 1, limit = 10, userId, status, deliveryType } = {}) => {
-    const filter = {};
-
-    if (userId       !== undefined) filter.userId       = userId;
-    if (status       !== undefined) filter.status       = status;
-    if (deliveryType !== undefined) filter.deliveryType = deliveryType;
-
-    const options = {
-        page:     Number(page),
-        limit:    Number(limit),
-        sort:     { createdAt: -1 },
-        populate: _populateOptions,
-        lean:     false
-    };
-
-    return await OrderModel.paginate(filter, options);
+const getAll = async () => {
+    return await OrderModel.find()
+        .populate(_populateOptions[0])
+        .populate(_populateOptions[1])
+        .populate(_populateOptions[2])
+        .populate(_populateOptions[3])
+        .populate(_populateOptions[4])
+        .populate(_populateOptions[5]);
 };
 
 // ─── GET BY ID ─────────────────────────────────────────────────────────────────

@@ -3,8 +3,7 @@ import categoryService from '../service/category.service.js';
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 export const getAll = async (req, res) => {
     try {
-        const { page, limit, isActive, parentCategoryId } = req.query;
-        const data = await categoryService.getAll({ page, limit, isActive, parentCategoryId });
+        const data = await categoryService.getAll();
 
         return res.status(200).json({
             ok:      true,
