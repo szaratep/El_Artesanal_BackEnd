@@ -1,6 +1,7 @@
 import express from 'express'
 import connectDB from './config/mongo.config.js';
 
+import authRoutes      from './routes/auth.routes.js';
 import userRoutes      from './routes/user.routes.js';
 import contactRoutes   from './routes/contact.routes.js';
 import categoryRoutes  from './routes/category.routes.js';
@@ -18,6 +19,7 @@ connectDB();
 
 app.use(express.json());
 
+app.use('/auth',       authRoutes);
 app.use('/users',      userRoutes);
 app.use('/contacts',   contactRoutes);
 app.use('/categories', categoryRoutes);

@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { ALLOWED_ROLES, ROLES } from "../config/global.config.js";
 
 const UserSchema = new Schema({
     name: {
@@ -34,8 +35,11 @@ const UserSchema = new Schema({
     role: {
         type: String,
         required: true,
-        enum: ['administrator', 'editor', 'author', 'contributor', 'subscriber'],
-        default: 'subscriber'
+        enum: {
+            values: ALLOWED_ROLES,
+            message: `El rol debe ser uno de los siguientes: ${ALLOWED_ROLES.join(', ')}`
+        },
+        default: ROLES.SUSCRIBER
     },
     status: {
         type: Boolean,
@@ -47,13 +51,16 @@ const UserSchema = new Schema({
     },
     contacts: [{
         type: Schema.Types.ObjectId,
-        ref: 'contacts'
+        ref: 'contact'
     }]
 }, {
     versionKey: false,
     timestamps: true
 });
 
-const UserModel = model('users', UserSchema);
+const UserModel = model(
+    'user',         // Define el nombre de la coleccion que almacenara el objeto creado con este Schema
+    UserSchema      // Asocia la estructura de datos a la coleccion
+);
 
 export default UserModel;

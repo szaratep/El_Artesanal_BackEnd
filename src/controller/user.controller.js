@@ -1,4 +1,5 @@
 import userService from '../service/user.service.js';
+import { encryptedPassword } from '../helper/bcrypt.helper.js';
 
 // ─── GET ALL ───────────────────────────────────────────────────────────────────
 export const getAll = async (req, res) => {
@@ -85,7 +86,29 @@ export const getByNickname = async (req, res) => {
 // ─── CREATE ────────────────────────────────────────────────────────────────────
 export const create = async (req, res) => {
     try {
-        const data = await userService.create(req.body);
+        if (!req.body.password) {
+            return res.status(400).json({
+                ok:      false,
+                message: 'El campo password es obligatorio',
+                error:   'El campo password es obligatorio'
+            });
+        }
+
+        // Encripta el password en texto plano ANTES de pasarlo al service
+        const hashedPassword = encryptedPassword(req.body.password);
+
+        if (hashedPassword === null) {
+            return res.status(500).json({
+                ok:      false,
+                message: 'No se pudo encriptar la contraseña',
+                error:   'No se pudo encriptar la contraseña'
+            });
+        }
+
+        const data = await userService.create({
+            ...req.body,
+            password: hashedPassword
+        });
 
         return res.status(201).json({
             ok:      true,
@@ -166,14 +189,25 @@ export const updateRole = async (req, res) => {
 // ─── UPDATE PASSWORD ───────────────────────────────────────────────────────────
 export const updatePassword = async (req, res) => {
     try {
-        const { id }             = req.params;
-        const { hashedPassword } = req.body;
+        const { id }       = req.params;
+        const { password } = req.body;
 
-        if (!hashedPassword) {
+        if (!password) {
             return res.status(400).json({
                 ok:      false,
-                message: 'El campo hashedPassword es obligatorio',
-                error:   'El campo hashedPassword es obligatorio'
+                message: 'El campo password es obligatorio',
+                error:   'El campo password es obligatorio'
+            });
+        }
+
+        // Encripta el password en texto plano ANTES de pasarlo al service
+        const hashedPassword = encryptedPassword(password);
+
+        if (hashedPassword === null) {
+            return res.status(500).json({
+                ok:      false,
+                message: 'No se pudo encriptar la contraseña',
+                error:   'No se pudo encriptar la contraseña'
             });
         }
 
