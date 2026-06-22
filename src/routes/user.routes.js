@@ -13,11 +13,14 @@ import {
     addContact,
     removeContact
 } from '../controller/user.controller.js';
+import authenticationUser from '../middleware/authentication.middleware.js';
+import authorizationUser from '../middleware/authorization.middleware.js';
+import { ROLES } from '../config/global.config.js';
 
 const router = Router();
 
 // ─── GET ──────────────────────────────────────────────────────────────────────
-router.get('/',                    getAll);           // GET    /api/v1/users
+router.get('/',authenticationUser, authorizationUser(ROLES.ADMIN), getAll);           // GET    /api/v1/users
 router.get('/:id',                 getById);          // GET    /api/v1/users/:id
 router.get('/email/:email',        getByEmail);       // GET    /api/v1/users/email/:email
 router.get('/nickname/:nickname',  getByNickname);    // GET    /api/v1/users/nickname/:nickname
