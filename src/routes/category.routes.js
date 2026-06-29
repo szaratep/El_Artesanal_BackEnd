@@ -9,23 +9,28 @@ import {
     softDelete,
     restore
 } from '../controller/category.controller.js';
+import authenticationUser from '../middleware/authentication.middleware.js';
+import authorizationUser  from '../middleware/authorization.middleware.js';
+import { ROLES } from '../config/global.config.js';
 
 const router = Router();
 
 // ─── GET ──────────────────────────────────────────────────────────────────────
-router.get('/',                        getAll);             // GET    /api/v1/categories
-router.get('/root',                    getAllRoot);          // GET    /api/v1/categories/root
-router.get('/:id',                     getById);            // GET    /api/v1/categories/:id
-router.get('/:parentId/subcategories', getSubcategories);   // GET    /api/v1/categories/:parentId/subcategories
+// Publicas - cualquier visitante puede ver el catalogo
+// verifyOwnResource no aplica: las categorias son recursos globales, no de un usuario
+router.get('/',                        getAll);
+router.get('/root',                    getAllRoot);
+router.get('/:id',                     getById);
+router.get('/:parentId/subcategories', getSubcategories);
 
 // ─── POST ─────────────────────────────────────────────────────────────────────
-router.post('/',                       create);             // POST   /api/v1/categories
+router.post('/', authenticationUser, authorizationUser(ROLES.ADMIN, ROLES.EDITOR), create);
 
 // ─── PUT ──────────────────────────────────────────────────────────────────────
-router.put('/:id',                     update);             // PUT    /api/v1/categories/:id
-router.put('/:id/restore',             restore);            // PUT    /api/v1/categories/:id/restore
+router.put('/:id',         authenticationUser, authorizationUser(ROLES.ADMIN, ROLES.EDITOR), update);
+router.put('/:id/restore', authenticationUser, authorizationUser(ROLES.ADMIN), restore);
 
 // ─── DELETE ───────────────────────────────────────────────────────────────────
-router.delete('/:id',                  softDelete);         // DELETE /api/v1/categories/:id
+router.delete('/:id', authenticationUser, authorizationUser(ROLES.ADMIN), softDelete);
 
 export default router;

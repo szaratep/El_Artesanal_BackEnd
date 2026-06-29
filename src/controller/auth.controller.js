@@ -1,6 +1,6 @@
 import { validatePassword } from "../helper/bcrypt.helper.js";
 import { generateToken } from "../helper/jwt.helper.js";
-import verifyEmailOrNickname from "../helper/verifyEmailOrNickname.helper.js";
+import verifyEmailOrNickname from "../helper/verifyemailornickname.helper.js";
 import user_service from "../service/user.service.js";
 
 

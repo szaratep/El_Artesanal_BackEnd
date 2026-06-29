@@ -13,30 +13,47 @@ import {
     addContact,
     removeContact
 } from '../controller/user.controller.js';
-import authenticationUser from '../middleware/authentication.middleware.js';
-import authorizationUser from '../middleware/authorization.middleware.js';
-import { ROLES } from '../config/global.config.js';
+import authenticationUser   from '../middleware/authentication.middleware.js';
+import authorizationUser    from '../middleware/authorization.middleware.js';
+import verifyOwnResource    from '../middleware/verifyownresource.middleware.js';
+import { ROLES, ALLOWED_ROLES } from '../config/global.config.js';
 
 const router = Router();
 
 // ─── GET ──────────────────────────────────────────────────────────────────────
-router.get('/',authenticationUser, authorizationUser(ROLES.ADMIN), getAll);           // GET    /api/v1/users
-router.get('/:id',                 getById);          // GET    /api/v1/users/:id
-router.get('/email/:email',        getByEmail);       // GET    /api/v1/users/email/:email
-router.get('/nickname/:nickname',  getByNickname);    // GET    /api/v1/users/nickname/:nickname
+// Solo administrator puede listar y consultar usuarios
+router.get('/',                   authenticationUser, authorizationUser(ROLES.ADMIN), getAll);
+router.get('/:id',                authenticationUser, authorizationUser(ROLES.ADMIN), getById);
+router.get('/email/:email',       authenticationUser, authorizationUser(ROLES.ADMIN), getByEmail);
+router.get('/nickname/:nickname', authenticationUser, authorizationUser(ROLES.ADMIN), getByNickname);
 
 // ─── POST ─────────────────────────────────────────────────────────────────────
-router.post('/',                   create);           // POST   /api/v1/users
+// Solo administrator puede crear usuarios directamente
+// El registro publico de clientes vive en POST /auth/register
+router.post('/', authenticationUser, authorizationUser(ROLES.ADMIN), create);
 
 // ─── PUT ──────────────────────────────────────────────────────────────────────
-router.put('/:id',                 update);           // PUT    /api/v1/users/:id
-router.put('/:id/role',            updateRole);       // PUT    /api/v1/users/:id/role
-router.put('/:id/password',        updatePassword);   // PUT    /api/v1/users/:id/password
-router.put('/:id/restore',         restore);          // PUT    /api/v1/users/:id/restore
-router.put('/:id/contacts',        addContact);       // PUT    /api/v1/users/:id/contacts
+// Cualquier usuario autenticado pero SOLO puede modificar su propio perfil
+// verifyOwnResource permite al admin modificar cualquiera, al resto solo el suyo
+router.put('/:id',          authenticationUser, authorizationUser(ALLOWED_ROLES), verifyOwnResource, update);
+
+// Solo administrator puede cambiar el rol de un usuario
+router.put('/:id/role',     authenticationUser, authorizationUser(ROLES.ADMIN), updateRole);
+
+// Cualquier usuario autenticado pero SOLO puede cambiar su propia contraseña
+router.put('/:id/password', authenticationUser, authorizationUser(ALLOWED_ROLES), verifyOwnResource, updatePassword);
+
+// Solo administrator puede restaurar una cuenta desactivada
+router.put('/:id/restore',  authenticationUser, authorizationUser(ROLES.ADMIN), restore);
+
+// Cualquier usuario autenticado pero SOLO puede gestionar sus propios contactos
+router.put('/:id/contacts', authenticationUser, authorizationUser(ALLOWED_ROLES), verifyOwnResource, addContact);
 
 // ─── DELETE ───────────────────────────────────────────────────────────────────
-router.delete('/:id',                          softDelete);     // DELETE /api/v1/users/:id
-router.delete('/:id/contacts/:contactId',      removeContact);  // DELETE /api/v1/users/:id/contacts/:contactId
+// Solo administrator puede desactivar cuentas
+router.delete('/:id',                     authenticationUser, authorizationUser(ROLES.ADMIN), softDelete);
+
+// Cualquier usuario autenticado pero SOLO puede eliminar sus propios contactos
+router.delete('/:id/contacts/:contactId', authenticationUser, authorizationUser(ALLOWED_ROLES), verifyOwnResource, removeContact);
 
 export default router;

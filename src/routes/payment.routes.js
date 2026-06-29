@@ -9,23 +9,28 @@ import {
     processRefund,
     hardDelete
 } from '../controller/payment.controller.js';
+import authenticationUser from '../middleware/authentication.middleware.js';
+import authorizationUser  from '../middleware/authorization.middleware.js';
+import { ROLES, ALLOWED_ROLES } from '../config/global.config.js';
 
 const router = Router();
 
 // ─── GET ──────────────────────────────────────────────────────────────────────
-router.get('/',                                       getAll);                     // GET    /api/v1/payments
-router.get('/transaction/:gatewayTransactionId',        getByGatewayTransactionId); // GET    /api/v1/payments/transaction/:gatewayTransactionId
-router.get('/order/:orderId',                           getByOrder);                // GET    /api/v1/payments/order/:orderId
-router.get('/:id',                                      getById);                   // GET    /api/v1/payments/:id
+router.get('/',                                  authenticationUser, authorizationUser(ROLES.ADMIN), getAll);
+router.get('/:id',                               authenticationUser, authorizationUser(ROLES.ADMIN), getById);
+router.get('/transaction/:gatewayTransactionId', authenticationUser, authorizationUser(ROLES.ADMIN), getByGatewayTransactionId);
+// El cliente consulta el pago de su propia orden → el orderId no es el userId
+// la verificacion de propiedad se hace en el service (orden pertenece al usuario)
+router.get('/order/:orderId', authenticationUser, authorizationUser(ALLOWED_ROLES), getByOrder);
 
 // ─── POST ─────────────────────────────────────────────────────────────────────
-router.post('/',                                        create);                    // POST   /api/v1/payments
+router.post('/', authenticationUser, authorizationUser(ALLOWED_ROLES), create);
 
 // ─── PUT ──────────────────────────────────────────────────────────────────────
-router.put('/:id/status',                               updateStatus);              // PUT    /api/v1/payments/:id/status
-router.put('/:id/refund',                                processRefund);             // PUT    /api/v1/payments/:id/refund
+router.put('/:id/status', authenticationUser, authorizationUser(ROLES.ADMIN), updateStatus);
+router.put('/:id/refund', authenticationUser, authorizationUser(ROLES.ADMIN), processRefund);
 
 // ─── DELETE ───────────────────────────────────────────────────────────────────
-router.delete('/:id',                                    hardDelete);                // DELETE /api/v1/payments/:id
+router.delete('/:id', authenticationUser, authorizationUser(ROLES.ADMIN), hardDelete);
 
 export default router;

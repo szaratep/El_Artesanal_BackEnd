@@ -10,24 +10,29 @@ import {
     setPayment,
     hardDelete
 } from '../controller/order.controller.js';
+import authenticationUser from '../middleware/authentication.middleware.js';
+import authorizationUser  from '../middleware/authorization.middleware.js';
+import verifyOwnResource  from '../middleware/verifyownresource.middleware.js';
+import { ROLES, ALLOWED_ROLES } from '../config/global.config.js';
 
 const router = Router();
 
 // ─── GET ──────────────────────────────────────────────────────────────────────
-router.get('/',                    getAll);            // GET    /api/v1/orders
-router.get('/number/:orderNumber',  getByOrderNumber);  // GET    /api/v1/orders/number/:orderNumber
-router.get('/user/:userId',         getByUser);         // GET    /api/v1/orders/user/:userId
-router.get('/:id',                  getById);           // GET    /api/v1/orders/:id
+router.get('/',                    authenticationUser, authorizationUser(ROLES.ADMIN, ROLES.EDITOR), getAll);
+// El :userId permite que verifyOwnResource valide que consulta su propio historial
+router.get('/user/:userId',        authenticationUser, authorizationUser(ALLOWED_ROLES), verifyOwnResource, getByUser);
+router.get('/number/:orderNumber', authenticationUser, authorizationUser(ALLOWED_ROLES), getByOrderNumber);
+router.get('/:id',                 authenticationUser, authorizationUser(ALLOWED_ROLES), getById);
 
 // ─── POST ─────────────────────────────────────────────────────────────────────
-router.post('/',                    create);            // POST   /api/v1/orders
+router.post('/', authenticationUser, authorizationUser(ALLOWED_ROLES), create);
 
 // ─── PUT ──────────────────────────────────────────────────────────────────────
-router.put('/:id/status',           updateStatus);      // PUT    /api/v1/orders/:id/status
-router.put('/:id/tracking',         updateTracking);    // PUT    /api/v1/orders/:id/tracking
-router.put('/:id/payment',          setPayment);        // PUT    /api/v1/orders/:id/payment
+router.put('/:id/status',   authenticationUser, authorizationUser(ROLES.ADMIN, ROLES.EDITOR), updateStatus);
+router.put('/:id/tracking', authenticationUser, authorizationUser(ROLES.ADMIN, ROLES.EDITOR), updateTracking);
+router.put('/:id/payment',  authenticationUser, authorizationUser(ROLES.ADMIN), setPayment);
 
 // ─── DELETE ───────────────────────────────────────────────────────────────────
-router.delete('/:id',               hardDelete);        // DELETE /api/v1/orders/:id
+router.delete('/:id', authenticationUser, authorizationUser(ROLES.ADMIN), hardDelete);
 
 export default router;

@@ -12,26 +12,31 @@ import {
     softDelete,
     restore
 } from '../controller/product.controller.js';
+import authenticationUser from '../middleware/authentication.middleware.js';
+import authorizationUser  from '../middleware/authorization.middleware.js';
+import { ROLES, ALLOWED_ROLES } from '../config/global.config.js';
 
 const router = Router();
 
 // ─── GET ──────────────────────────────────────────────────────────────────────
-router.get('/',                getAll);          // GET    /api/v1/products
-router.get('/featured',        getFeatured);     // GET    /api/v1/products/featured
-router.get('/sku/:sku',        getBySku);        // GET    /api/v1/products/sku/:sku
-router.get('/:id',             getById);         // GET    /api/v1/products/:id
-router.get('/:id/price',       resolvePrice);    // GET    /api/v1/products/:id/price?quantity=5
+// Publicas - cualquier visitante puede ver el catalogo
+// verifyOwnResource no aplica: los productos son recursos globales, no de un usuario
+router.get('/',          getAll);
+router.get('/featured',  getFeatured);
+router.get('/sku/:sku',  getBySku);
+router.get('/:id',       getById);
+router.get('/:id/price', authenticationUser, authorizationUser(ALLOWED_ROLES), resolvePrice);
 
 // ─── POST ─────────────────────────────────────────────────────────────────────
-router.post('/',               create);          // POST   /api/v1/products
+router.post('/', authenticationUser, authorizationUser(ROLES.ADMIN, ROLES.EDITOR), create);
 
 // ─── PUT ──────────────────────────────────────────────────────────────────────
-router.put('/:id',             update);          // PUT    /api/v1/products/:id
-router.put('/:id/stock',       updateStock);     // PUT    /api/v1/products/:id/stock
-router.put('/:id/featured',    toggleFeatured);  // PUT    /api/v1/products/:id/featured
-router.put('/:id/restore',     restore);         // PUT    /api/v1/products/:id/restore
+router.put('/:id',          authenticationUser, authorizationUser(ROLES.ADMIN, ROLES.EDITOR), update);
+router.put('/:id/stock',    authenticationUser, authorizationUser(ROLES.ADMIN), updateStock);
+router.put('/:id/featured', authenticationUser, authorizationUser(ROLES.ADMIN, ROLES.EDITOR), toggleFeatured);
+router.put('/:id/restore',  authenticationUser, authorizationUser(ROLES.ADMIN), restore);
 
 // ─── DELETE ───────────────────────────────────────────────────────────────────
-router.delete('/:id',          softDelete);      // DELETE /api/v1/products/:id
+router.delete('/:id', authenticationUser, authorizationUser(ROLES.ADMIN), softDelete);
 
 export default router;
